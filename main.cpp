@@ -64,19 +64,21 @@ public:
 	A(A&& a) noexcept
 		: id(A::cnt++)
 	{
-		if (a.str) {
+		if (a.len != -1) {
 			str = a.str;
-			a.str = nullptr;
 			len = a.len;
+			a.str = nullptr;
+			a.len = -1;
 		}
 		LOG(INFO) << "    move constructor (size: " << len << ", id: " << id << ")";
 	}
 	A& operator=(A&& a) noexcept {
 		if (this != &a) {
-			if (a.str) {
+			if (a.len != -1) {
 				str = a.str;
-				a.str = nullptr;
 				len = a.len;
+				a.str = nullptr;
+				a.len = -1;
 			}
 		}
 		LOG(INFO) << "    move assignment operator (size: " << len << ", id: " << id << ")";
@@ -91,7 +93,6 @@ public:
 		}
 	}
 
-private:
 	char* str = nullptr;
 	int len = -1;
 	unsigned long id = -1;
@@ -101,9 +102,17 @@ private:
 
 unsigned long A::cnt = 1;
 
-A move_test() {
+A move_test_01(A a) {
+	LOG(INFO) << __LINE__;
+	return a;
+}
+
+A move_test_02() {
 	LOG(INFO) << __LINE__;
 	A a(13);
+	a.str[0] = 'L';
+	a.str[1] = 'A';
+	a.str[2] = '?';
 	LOG(INFO) << __LINE__;
 	return a;
 }
@@ -111,11 +120,23 @@ A move_test() {
 void test_modern_cpp() {
 	LOG(INFO) << __LINE__;
 	A a1(7);
+	a1.str[0] = 'a';
+	a1.str[1] = '%';
+	a1.str[2] = '9';
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << __LINE__;
 	A a2 = std::move(a1);
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << __LINE__;
-	a2 = A(9);
+	A a3 = move_test_01(std::move(a2));
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
+	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << __LINE__;
-	a2 = move_test();
+	a1 = move_test_02();
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
+	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << __LINE__;
 }
