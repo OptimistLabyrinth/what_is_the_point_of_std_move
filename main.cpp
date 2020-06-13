@@ -124,63 +124,63 @@ public:
 unsigned long A::cnt = 1;
 
 A move_test_01(A a) {
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "> a.str: " << (a.str != nullptr ? a.str : "nul") << "... a.id: " << a.id;
 	return a;
 }
 
 A move_test_02() {
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	A a(13);
 	a.str[0] = 'L';
 	a.str[1] = 'A';
 	a.str[2] = '?';
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "> a.str: " << (a.str != nullptr ? a.str : "nul") << "... a.id: " << a.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	return a;
 }
 
 void test_modern_cpp() {
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	A a1(7);
 	a1.str[0] = 'a';
 	a1.str[1] = '%';
 	a1.str[2] = '9';
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	A a2 = A(17);
 	a2.str[0] = 'X';
 	a2.str[1] = 'O';
 	a2.str[2] = 'R';
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	A a3 = a1;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	A a4 = std::move(a1);
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	a3 = move_test_01(a2);
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	a4 = move_test_01(std::move(a2));
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 	a3 = move_test_02();
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
-	LOG(INFO) << __LINE__;
+	LOG(INFO) << (size_t(__LINE__) < 100 ? " " : "") << __LINE__;
 }
