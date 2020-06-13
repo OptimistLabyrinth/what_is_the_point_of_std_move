@@ -1,7 +1,9 @@
 #include <cstdlib>
 #include <iostream>
 
+#ifdef _MSVC_LANG
 #define GOOGLE_GLOG_DLL_DECL
+#endif
 #include "glog/logging.h"
 
 void test_modern_cpp();
@@ -13,8 +15,12 @@ int main() {
 	google::InitGoogleLogging("cpp_test");
 	std::atexit(google::ShutdownGoogleLogging);
 
+#ifdef _MSVC_LANG
 	LOG(INFO) << "[" << _MSVC_LANG << "]";
-
+#else
+	LOG(INFO) << "[" << __cplusplus << "]";
+#endif
+	
 	test_modern_cpp();
 
 	return 0;
@@ -64,7 +70,7 @@ public:
 	A(A&& a) noexcept
 		: id(A::cnt++)
 	{
-		// below block is the same with this => [ *this = std::move(a) ];
+		// below block is the same as => [ *this = std::move(a) ];
 		if (a.len != -1) {
 			std::swap(str, a.str);
 			std::swap(len, a.len);
