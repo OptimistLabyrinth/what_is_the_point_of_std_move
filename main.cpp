@@ -32,7 +32,7 @@ public:
 				*(str + i) = '\0';
 			}
 		}
-		LOG(INFO) << "    parameterized constructor (size: " << len << ", id: " << id << ")";
+		LOG(INFO) << "    parameterized constructor (id: " << id << ", size: " << len << ")";
 	}
 	A(const A& a)
 		: id(A::cnt++)
@@ -44,7 +44,7 @@ public:
 				str[i] = a.str[i];
 			}
 		}
-		LOG(INFO) << "    copy constructor (size: " << len << ", id: " << id << ")";
+		LOG(INFO) << "    copy constructor (id: " << id << ", size: " << len << ")";
 	}
 	A& operator=(const A& a) {
 		if (this != &a) {
@@ -58,34 +58,31 @@ public:
 				str[i] = a.str[i];
 			}
 		}
-		LOG(INFO) << "    copy assignment operator (size: " << len << ", id: " << id << ")";
+		LOG(INFO) << "    copy assignment operator (id: " << id << ", size: " << len << ")";
 		return *this;
 	}
 	A(A&& a) noexcept
 		: id(A::cnt++)
 	{
+		// below block is the same with this => [ *this = std::move(a) ];
 		if (a.len != -1) {
-			str = a.str;
-			len = a.len;
-			a.str = nullptr;
-			a.len = -1;
+			std::swap(str, a.str);
+			std::swap(len, a.len);
 		}
-		LOG(INFO) << "    move constructor (size: " << len << ", id: " << id << ")";
+		LOG(INFO) << "    move constructor (id: " << id << ", size: " << len << ")";
 	}
 	A& operator=(A&& a) noexcept {
 		if (this != &a) {
 			if (a.len != -1) {
-				str = a.str;
-				len = a.len;
-				a.str = nullptr;
-				a.len = -1;
+				std::swap(str, a.str);
+				std::swap(len, a.len);
 			}
 		}
-		LOG(INFO) << "    move assignment operator (size: " << len << ", id: " << id << ")";
+		LOG(INFO) << "    move assignment operator (id: " << id << ", size: " << len << ")";
 		return *this;
 	}
 	~A() {
-		LOG(INFO) << "    destructor (size: " << len << ", id: " << id << ")";
+		LOG(INFO) << "    destructor (id: " << id << ", size: " << len << ")";
 		if (len != -1) {
 			delete[] str;
 			len = -1;
@@ -123,20 +120,46 @@ void test_modern_cpp() {
 	a1.str[0] = 'a';
 	a1.str[1] = '%';
 	a1.str[2] = '9';
-	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << __LINE__;
-	A a2 = std::move(a1);
-	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
-	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
-	LOG(INFO) << __LINE__;
-	A a3 = move_test_01(std::move(a2));
+	A a2 = A(17);
+	a2.str[0] = 'X';
+	a2.str[1] = 'O';
+	a2.str[2] = 'R';
 	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
-	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
 	LOG(INFO) << __LINE__;
-	a1 = move_test_02();
+	A a3 = a1;
 	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
 	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
 	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
+	LOG(INFO) << __LINE__;
+	A a4 = std::move(a1);
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
+	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
+	LOG(INFO) << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
+	LOG(INFO) << __LINE__;
+	A a5 = move_test_01(a2);
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
+	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
+	LOG(INFO) << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
+	LOG(INFO) << "a5.str: " << (a5.str != nullptr ? a5.str : "nul") << "... a5.id: " << a5.id;
+	LOG(INFO) << __LINE__;
+	A a6 = move_test_01(std::move(a2));
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
+	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
+	LOG(INFO) << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
+	LOG(INFO) << "a5.str: " << (a5.str != nullptr ? a5.str : "nul") << "... a5.id: " << a5.id;
+	LOG(INFO) << "a6.str: " << (a6.str != nullptr ? a6.str : "nul") << "... a6.id: " << a6.id;
+	LOG(INFO) << __LINE__;
+	a3 = move_test_02();
+	LOG(INFO) << "a1.str: " << (a1.str != nullptr ? a1.str : "nul") << "... ai.id: " << a1.id;
+	LOG(INFO) << "a2.str: " << (a2.str != nullptr ? a2.str : "nul") << "... a2.id: " << a2.id;
+	LOG(INFO) << "a3.str: " << (a3.str != nullptr ? a3.str : "nul") << "... a3.id: " << a3.id;
+	LOG(INFO) << "a4.str: " << (a4.str != nullptr ? a4.str : "nul") << "... a4.id: " << a4.id;
+	LOG(INFO) << "a5.str: " << (a5.str != nullptr ? a5.str : "nul") << "... a5.id: " << a5.id;
+	LOG(INFO) << "a6.str: " << (a6.str != nullptr ? a6.str : "nul") << "... a6.id: " << a6.id;
 	LOG(INFO) << __LINE__;
 }
